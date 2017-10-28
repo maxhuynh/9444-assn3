@@ -136,10 +136,14 @@ def update_replay_buffer(replay_buffer, state, action, reward, next_state, done,
     """
     # TO IMPLEMENT: append to the replay_buffer
     # ensure the action is encoded one hot
-    one_hot_action = np.zeros(action_dim)
-    one_hot_action[action] = 1
+    onehot_encoded = list()
+    if (action == 0):
+        onehot_encoded = [1, 0]
+    else:
+        onehot_encoded = [0, 1]
     # append to buffer
-    replay_buffer.append((state, one_hot_action, reward, next_state, done))
+    replay_append = [state, onehot_encoded, reward, next_state, done]
+    replay_buffer.append(replay_append)
     # Ensure replay_buffer doesn't grow larger than REPLAY_SIZE
     if len(replay_buffer) > REPLAY_SIZE:
         replay_buffer.pop(0)
