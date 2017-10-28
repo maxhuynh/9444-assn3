@@ -73,15 +73,22 @@ def get_network(state_dim, action_dim, hidden_nodes=HIDDEN_NODES):
     # TO IMPLEMENT: Q network, whose input is state_in, and has action_dim outputs
     # which are the network's esitmation of the Q values for those actions and the
     # input state. The final layer should be assigned to the variable q_values
-    ...
-    q_values = ...
+    w1 = tf.Variable(tf.constant(0.01, shape = [state_dim, HIDDEN_NODES]))
+    b1 = tf.Variable(tf.constant(0.01, shape = [HIDDEN_NODES]))
+    
+    w2 = tf.Variable(tf.constant(0.01, shape = [HIDDEN_NODES, action_dim]))
+    b2 = tf.Variable(tf.constant(0.01, shape = [action_dim]))
+
+    hidden_layer = tf.nn.relu(tf.matmul(state_in, w1) + b1)
+
+    q_values = tf.matmul(hidden_layer, w2) + b2
 
     q_selected_action = \
         tf.reduce_sum(tf.multiply(q_values, action_in), reduction_indices=1)
 
     # TO IMPLEMENT: loss function
     # should only be one line, if target_in is implemented correctly
-    loss = ...
+    loss = tf.reduce_mean(tf.square(tf.subtract(q_selected_action, target_in)))
     optimise_step = tf.train.AdamOptimizer().minimize(loss)
 
     train_loss_summary_op = tf.summary.scalar("TrainingLoss", loss)
