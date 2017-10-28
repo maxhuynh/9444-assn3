@@ -136,13 +136,15 @@ def update_replay_buffer(replay_buffer, state, action, reward, next_state, done,
     """
     # TO IMPLEMENT: append to the replay_buffer
     # ensure the action is encoded one hot
-    ...
+    one_hot_action = np.zeros(action_dim)
+    one_hot_action[action] = 1
     # append to buffer
-    replay_buffer.append(...)
+    replay_buffer.append((state, one_hot_action, reward, next_state, done))
     # Ensure replay_buffer doesn't grow larger than REPLAY_SIZE
     if len(replay_buffer) > REPLAY_SIZE:
         replay_buffer.pop(0)
     return None
+
 
 
 def do_train_step(replay_buffer, state_in, action_in, target_in,
@@ -195,7 +197,7 @@ def get_train_batch(q_values, state_in, replay_buffer):
             target_batch.append(reward_batch[i])
         else:
             # TO IMPLEMENT: set the target_val to the correct Q value update
-            target_val = ...
+            target_val = reward_batch[i]+GAMMA*np.max(Q_value_batch[i])
             target_batch.append(target_val)
     return target_batch, state_batch, action_batch
 
